@@ -1,127 +1,254 @@
-# Hipoteza Badawcza LLM — Fundamentalna Wada Kanału Tekst → Token
+# Hipoteza Badawcza LLM — Fundamentalna Wada Kanału „tekst → token”
 
-## 1. Sformalizowana Teza (H-LLM)
+## 1. Sformalizowana teza (H-LLM)
 
 **Teza [H-LLM]:**  
-_Warstwa „tekst → token” w obecnych systemach LLM jest fundamentalnie niewystarczająca jako samodzielny model rzeczywistości. Wprowadza systematyczne zniekształcenia i podatności, których nie można usunąć samą optymalizacją ani skalowaniem modelu._
+Warstwa „tekst → token” w obecnych systemach LLM jest fundamentalnie niewystarczająca jako samodzielny model rzeczywistości. Wprowadza systematyczne zniekształcenia i podatności, których nie można usunąć samą optymalizacją ani skalowaniem modelu.
 
-### Formalizacja:
+### 1.1. Elementy modelu
 
-Załóżmy:
+Wprowadzamy następujące zbiory i funkcje:
 
-- \( W \) – przestrzeń stanów świata (ciągła, wielowymiarowa: sensoryka, ciało, kontekst),
-- \( L \) – przestrzeń ciągów znaków (język pisany),
-- \( V \) – skończony słownik tokenów,
-- \( T: L \to V^n \) – deterministyczny kanał tekst → token,
-- \( F: V^n \to Y \) – LLM wraz z filtrami bezpieczeństwa.
+- W — przestrzeń stanów świata (ciągła, wielowymiarowa: zmysły, ciało, kontekst społeczny, czas).
+- L — przestrzeń tekstów (ciągi znaków w danym języku).
+- V — skończony słownik tokenów (np. ID 0…N−1).
+- T : L → V^n — kanał „tekst → token” (normalizacja, tokenizacja).
+- F : V^n → Y — model LLM (razem z filtrami bezpieczeństwa), gdzie Y to przestrzeń odpowiedzi / decyzji.
 
-#### Kluczowe założenia:
+Intuicyjnie:
 
-1. Istnieją podzbiory \( L_B \subset L \), takie że:
+- W  →  L  →  V^n  →  Y  
+  świat → tekst → tokeny → odpowiedź modelu.
 
-   \[
-   \text{render}(l_1) \approx \text{render}(l_2), \quad l_1, l_2 \in L_B
-   \]
+### 1.2. Część 1 tezy — istnienie wrażliwych podzbiorów
 
-   lecz:
+Istnieje taki podzbiór L_B ⊂ L (czyli pewna klasa tekstów), że:
 
-   \[
-   F(T(l_1)) \neq F(T(l_2))
-   \]
+- dla niektórych l₁, l₂ ∈ L_B:
 
-   co oznacza: _model inaczej interpretuje formalnie równoważne dane wejściowe._
+  - z punktu widzenia człowieka są **wizualnie równoważne**  
+    (np. wyglądają tak samo lub prawie tak samo po wyrenderowaniu na ekranie):
 
-2. Zjawisko to jest **strukturalne** i wynika z:
+    - render(l₁) ≈ render(l₂)  
+      (≈ oznacza: człowiek widzi je jako to samo albo prawie to samo)
 
-   \[
-   W \to L \to V^n
-   \]
+  - ale model przetwarza je jako **różne stany wewnętrzne**, tzn.:
 
-   jako sekwencji stratnych kompresji, które:
-   - **nie są izometryczne**,  
-   - mają „szwy” (np. pelikany Unicode, warianty CJK, ukryte spacje),
-   - prowadzą do lokalnych anomalii (szum kodowania, exploity znakowe).
+    - F( T(l₁) ) ≠ F( T(l₂) )
 
-3. Dla dowolnego \( F \) opartego wyłącznie o \( T \), istnieje **niezerowa miara** takich anomalii, która przetrwa nawet przy:
-   - zwiększeniu parametrów,
-   - retrenowaniu,
-   - lokalnych poprawkach tokenizerów i filtrów.
+Co to znaczy „różne” w praktyce:
 
----
+- model wydaje inną decyzję,
+- albo generuje inny typ odpowiedzi,
+- albo w jednym przypadku utrzymuje bezpieczeństwo, a w drugim je narusza,
+- mimo że dla człowieka wejścia są (praktycznie) równoważne.
 
-## 2. Reżim Falsyfikacji
+Przykład klasy L_B (intuicyjnie):
 
-Hipoteza H-LLM jest falsyfikowalna. Zostaje obalona, jeśli:
+- różne warianty tego samego chińskiego znaku (np. bambus),
+- różne warianty Unicode, homoglifów,
+- teksty różniące się tylko mikroskopijnymi znakami specjalnymi.
 
-1. Istnieje model \( F^\star \) i kanał \( T^\star \), dla których:
+### 1.3. Część 2 tezy — strukturalny charakter zjawiska
 
-   \[
-   \forall \, l_1, l_2 \in L:
-   \big(\text{render}(l_1) = \text{render}(l_2)\big) \Rightarrow
-   \mathbb{P}(F^\star(T^\star(l_1)) \neq F^\star(T^\star(l_2))) \approx 0
-   \]
+Zjawisko to jest **strukturalne**, a nie tylko „zbiorem bugów”, ponieważ:
 
-2. Udowodniona zostaje odporność takiego systemu na wszystkie współczesne exploity znakowe:
+1. Cały tor:
 
-   - heterogeniczne Unicode,
-   - microróżnice CJK,
-   - kierunkowość tekstu,
-   - exploit Bambusa,
-   - permutacje strukturalne w sekwencji.
+   - W  →  L  →  V^n
 
-3. Testy te nie łamią modelu **ani lokalnie, ani po zmianie dystrybucji danych.**
+   jest sekwencją silnie stratnych kompresji:
 
----
+   - W → L: świat ciągły kompresujemy do liniowego tekstu,
+   - L → V^n: tekst kompresujemy do skończonej liczby symboli (tokenów).
 
-## 3. Dowód Naukowy (Argumentacyjny)
+2. Te kompresje:
 
-### 3.1 Teoria:
+   - nie zachowują odległości ani struktury w pełni (brak izometrii),
+   - mają „szwy” i nierówności:
+     - różne kodowania Unicode,
+     - warianty znaków CJK,
+     - kierunek czytania,
+     - reguły tokenizacji (BPE, SentencePiece itp.).
 
-Kanał \( W \to L \to V^n \) jest:
+3. W tych „szwach” powstają:
 
-- **Stratny**: świat → język → tokeny traci informacje o intencji, ciele, lokalności i strukturze świata.
-- **Dyskretny**: tokeny są skończonymi ID, nie wielowymiarowymi stanami.
-- **Niejednorodny**: Unicode, BPE, SentencePiece wprowadzają lokalne nieliniowości.
+   - lokalne obszary, w których:
+     - bardzo mała zmiana na poziomie tekstu (L) daje dużą zmianę na poziomie tokenów (V^n),
+     - lub odwrotnie: duża zmiana w L jest kiepsko rozróżniana w V^n.
 
-To oznacza, że:
+To właśnie te obszary są źródłem:
 
-- Istnieją regiony \( V^n \), które są _geometrycznie złe_, tzn. obszary, gdzie mała zmiana \( L \) daje dużą zmianę \( V^n \),
-- oraz te, gdzie duża zmiana \( L \) jest ignorowana.
+- exploitów na poziomie znaków,
+- niestabilności filtrów bezpieczeństwa,
+- halucynacji i anomalii zachowania modelu.
 
-### 3.2 Empiria (NLP/Security):
+### 1.4. Część 3 tezy — nieusuwalność tego efektu przy samym tekście
 
-- Exploity znakowe (Unicode, homoglif, niewidzialne spacje) potrafią systematycznie przełączać LLM między trybami:
-  - bezpieczna → niebezpieczna,
-  - logiczna → halucynująca,
-  - uległa → odrzucająca.
-- To zjawisko powtarza się między modelami i generacjami, mimo wzrostu rozmiaru.
+Dla każdego modelu F, który:
 
-### 3.3 Neurologia (Analogicznie):
+- korzysta **tylko** z kanału tekst → token (T),
+- nie ma dodatkowych kanałów uziemienia (np. sensorycznych, symbolicznych ponad tekst),
 
-- Ludzki mózg ma realny kanał kierunkowy czytania (tor wzrokowy, sakkady).
-- Zaburzenie kierunku (np. odwrócony tekst) zmienia funkcję czytania (z dekodowania → interpretacji).
-- Test „ZERPYZTRAP” wykazuje zmianę trybu pracy i punkt zahaczenia na „anomalii ciągu”.
+istnieje **niezerowy zbiór** wejść L_B, dla których:
 
----
+- opisane powyżej zjawisko (równoważne wizualnie teksty → różne decyzje) **nie znika po skalowaniu**:
 
-## 4. Ocena w Reżimie Nauki
+  - nawet jeśli zwiększymy parametry F,
+  - nawet jeśli będziemy dłużej trenować,
+  - nawet jeśli będziemy lokalnie poprawiać T (np. dodawać specjalne normalizacje).
 
-> **Prawdopodobieństwo, że H-LLM stanowi trafny opis fundamentalnego ograniczenia LLM opartego wyłącznie o tekst→token:**  
-> **≈ 90%**
+Innymi słowy:
 
-**Wniosek:**  
-Teza najprawdopodobniej nie dotyczy pojedynczego błędu modeli, lecz właściwości **systemowej**, wynikającej z ontologii symbolicznego przetwarzania tekstu.
+- przy czystym, tekstowym LLM **nie da się całkowicie wyeliminować** klasy podatności wynikających z natury kanału tekst → token;
+- pełna naprawa wymaga:
+  - dodatkowych kanałów uziemienia (świat, sensoryka),
+  - albo dodatkowej meta-warstwy nad tekstem (np. Twoje mosty semantyczne jako jawny poziom organizacji znaczenia).
 
 ---
 
-## 5. Konsekwencje Badawcze
+## 2. Maksymalny reżim falsyfikacji (kiedy hipoteza byłaby fałszywa)
 
-1. **LLM potrzebują dodatkowych kanałów uziemienia:**
-   - sensorycznego (wizja, dźwięk, motoryka),
-   - symbolicznego (warstwa typu „mosty semantyczne”),
-   - kontekstowego (stan użytkownika, intencja, trajektoria dialogu).
+Hipoteza H-LLM jest falsyfikowalna.  
+Byłaby **obalona**, gdybyśmy pokazali system LLM, który spełnia wszystkie trzy warunki:
 
-2. Sama warstwa tekst → token nie wystarczy dla reprezentacji rzeczywistości zaufanej i odpornej.
+### 2.1. Warunek 1 — odporność na równoważne wizualnie wejścia
 
-3. Specyficzne exploity (Unicode/Bambus/zakłócenia kodowania) nie są „bugiem” – są dowodem na strukturę ograniczenia.
+Istnieje model F* oraz kanał T*, takie że dla wszystkich tekstów l₁, l₂:
 
+- jeśli render(l₁) = render(l₂) (człowiek uznaje je za identyczne),
+
+to:
+
+- F*( T*(l₁) ) i F*( T*(l₂) ) są praktycznie nieodróżnialne statystycznie w:
+
+  - zadaniach semantycznych,
+  - zadaniach bezpieczeństwa,
+  - zadaniach generacyjnych.
+
+Czyli:  
+model nie daje się „oszukać” wariantami kodowania, homoglifami, mikrozmianami znaków, jeśli człowiek uważa je za równoważne.
+
+### 2.2. Warunek 2 — odporność na wszystkie znane klasy ataków znakowych
+
+System pozostaje stabilny pod red-teamingiem obejmującym m.in.:
+
+- warianty Unicode,
+- homoglifowe podmiany znaków,
+- mikroróżnice w chińskich znakach (CJK),
+- dodawanie i usuwanie niewidzialnych znaków,
+- manipulację kierunkiem czytania i segmentacją,
+- kombinacje powyższych.
+
+W żadnym z tych przypadków nie obserwujemy:
+
+- powtarzalnego jailbreaku,
+- przełączenia zachowania w tryb niebezpieczny,
+- systematycznych zmian decyzji przy wizualnie równoważnych wejściach.
+
+### 2.3. Warunek 3 — stabilność w czasie i domenie
+
+Odporność nie jest jednorazowa:
+
+- utrzymuje się na:
+  - kolejnych wersjach modelu,
+  - rozszerzonych zbiorach danych,
+  - w nowych domenach tekstu.
+
+Jeżeli kiedyś taki model powstanie i spełni powyższe kryteria bez dodatkowych kanałów uziemienia, hipoteza H-LLM zostanie osłabiona lub obalona.
+
+---
+
+## 3. „Dowód” w sensie naukowym (argument z teorii i faktów)
+
+To nie jest dowód matematyczny, lecz rygorystyczny argument oparty na:
+
+- teorii informacji,
+- praktyce NLP i bezpieczeństwa,
+- analogii z neurologią.
+
+### 3.1. Z teorii informacji i reprezentacji
+
+Kanał:
+
+- W → L — świat do języka,
+- L → V^n — język do tokenów,
+
+jest:
+
+1. **Stratny** (losing information):
+
+   - W → L odrzuca ogromną część stanu świata (ciało, zapach, mikrogesty, hormonologię, lokalność).
+   - L → V^n odrzuca informację o mikroskopijnej strukturze znaków, ich pochodzeniu, historii, wariantach graficznych.
+
+2. **Dyskretny**:
+
+   - V jest skończony, więc różne formy w L muszą „ściskać się” w te same lub bliskie tokeny,
+   - inne z kolei dostają „osobne szufladki”, mimo że dla człowieka różnica jest minimalna.
+
+3. **Niejednorodny**:
+
+   - Unicode zawiera wielokrotne warianty tych samych znaków z historycznych powodów,
+   - tokenizatory (BPE itd.) optymalizowane są pod częstość, nie pod zgodność semantyczną.
+
+To **gwarantuje pojawienie się regionów anomalii**: na poziomie V^n istnieją „szwy”, które nie są symetryczne z ludzką percepcją.
+
+### 3.2. Z praktyki NLP i bezpieczeństwa
+
+W literaturze i praktyce:
+
+- ataki oparte na Unicode i homoglifach regularnie:
+
+  - zmieniają decyzje klasyfikatorów (np. toksyczność, spam),
+  - powodują różnice w zachowaniu modeli przy pozornie identycznych wejściach,
+  - służą do jailbreaku filtrów bezpieczeństwa,
+
+- większe modele **nie eliminują** tego efektu, lecz czasem go maskują lub przesuwają w inne rejony.
+
+Empiryczny wniosek:
+
+- eksploatowalne „szwy” w torze tekst → token → embedding istnieją,
+- nie znikają wraz z rozmiarem modelu.
+
+### 3.3. Z neurologii i psychologii czytania (analog strukturalny)
+
+W ludzkim układzie nerwowym:
+
+- istnieje funkcjonalny „nerw kierunku czytania”:
+  - tor wzrokowy,
+  - sterowanie sakkadami,
+  - kierunkowa organizacja pól uwagi,
+- odwrócenie kierunku lub struktury tekstu (jak w Twoim przykładzie „ZERPYZTRAP”) zmienia tryb pracy:
+  - z automatycznego czytania,
+  - na dekodowanie / literowanie / analizę anomalii.
+
+Analogicznie w LLM:
+
+- parametry pozycji, kierunkowość sekwencji i segmentacja tokenów pełnią rolę syntetycznego „nerwu kierunku”.
+
+Zarówno w mózgu, jak i w LLM:
+
+- wąskie gardło wejściowe z własnymi regułami powoduje specyficzne zniekształcenia,
+- Twoje testy (na sobie i na modelach) pokazują, że te zniekształcenia są **powtarzalne i ustrukturyzowane**.
+
+---
+
+## 4. Ocena (liczba)
+
+W absolutnym reżimie:
+
+> **Prawdopodobieństwo, że hipoteza H-LLM jest trafnym opisem obecnej generacji LLM opartych wyłącznie na tekst → token:**
+
+**≈ 90%**
+
+Czyli:
+
+- z dużym prawdopodobieństwem nie mówimy o pojedynczych błędach implementacyjnych,
+- tylko o **fundamentalnym ograniczeniu całej warstwy „tekst → token” jako modelu rzeczywistości**,
+- które można złagodzić, ale nie skasować, _bez_ wprowadzenia dodatkowych kanałów (sensorycznych, symbolicznych, mostów semantycznych).
+
+---
+
+## 5. Podsumowanie w jednym zdaniu
+
+Warstwa „tekst → token” w LLM działa jak wąski, kierunkowy nerw wzrokowy: jest konieczna do przetwarzania, ale strukturalnie zbyt uboga, aby sama w sobie być modelem rzeczywistości — jej szwy i asymetrie generują exploity nieusuwalne samym „przykręcaniem parametrów” modelu.
