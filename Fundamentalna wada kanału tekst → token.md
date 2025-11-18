@@ -252,3 +252,7 @@ Czyli:
 ## 5. Podsumowanie w jednym zdaniu
 
 Warstwa „tekst → token” w LLM działa jak wąski, kierunkowy nerw wzrokowy: jest konieczna do przetwarzania, ale strukturalnie zbyt uboga, aby sama w sobie być modelem rzeczywistości — jej szwy i asymetrie generują exploity nieusuwalne samym „przykręcaniem parametrów” modelu.
+
+## 6. Wątek
+
+https://chatgpt.com/share/691be653-a2dc-800e-bcd4-6e724bd18436 
