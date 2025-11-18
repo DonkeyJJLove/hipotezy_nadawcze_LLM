@@ -1,4 +1,4 @@
-# Hipoteza Badawcza LLM — Fundamentalna Wada Kanału „tekst → token”
+# Hipoteza Badawcza LLM ( GPT 5.1 — https://chatgpt.com/share/691be653-a2dc-800e-bcd4-6e724bd18436 ) — Fundamentalna Wada Kanału „tekst → token”
 
 ## 1. Sformalizowana teza (H-LLM)
 
@@ -253,6 +253,3 @@ Czyli:
 
 Warstwa „tekst → token” w LLM działa jak wąski, kierunkowy nerw wzrokowy: jest konieczna do przetwarzania, ale strukturalnie zbyt uboga, aby sama w sobie być modelem rzeczywistości — jej szwy i asymetrie generują exploity nieusuwalne samym „przykręcaniem parametrów” modelu.
 
-## 6. Wątek
-
-https://chatgpt.com/share/691be653-a2dc-800e-bcd4-6e724bd18436 
