@@ -1,0 +1,25 @@
+# Local environments / IDE
+.venv/
+venv/
+.idea/
+.vscode/
+
+# Python / analysis state
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local secrets / scratch
+.env
+.env.*
+!.env.sample
+*.log
+.tmp/
+tmp/
+
+# OS
+.DS_Store
+Thumbs.db
