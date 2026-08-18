@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "repository": {
+    "id": "DonkeyJJLove/hipotezy_nadawcze_LLM",
+    "url": "https://github.com/DonkeyJJLove/hipotezy_nadawcze_LLM",
+    "owner": "DonkeyJJLove",
+    "default_branch": "main",
+    "vcs_ref": null
+  },
+  "cyber_lion": {
+    "tile_id": "epistemic-lab.llm-hypotheses",
+    "roles": ["HypothesisLab", "ExperimentDesignProvider", "FalsificationEvidenceProvider"],
+    "layers": ["SEM"],
+    "disposition": ["KEEP", "REFINE", "EXPERIMENTAL", "INTEGRATE"]
+  },
+  "capabilities": [
+    "hypothesis.formalize",
+    "experiment.design",
+    "falsifier.define",
+    "evidence.compare",
+    "confidence.revise",
+    "artifact.supersede"
+  ],
+  "authority": {
+    "maximum_level": "read",
+    "required_gates": ["rnd.promotion", "cyber-lion.mand"]
+  },
+  "observability": {
+    "logs": ["hypothesis.created", "experiment.proposed", "evidence.attached", "confidence.updated"],
+    "metrics": ["hypothesis.count", "falsification.count", "confidence.delta", "negative.result.count"],
+    "traces": ["thesis→prediction→falsifier→evidence→revision→promotion/supersession"]
+  },
+  "security": {
+    "trust_boundaries": [
+      "model explanation != evidence",
+      "hypothesis confidence != runtime authority",
+      "semantic regularity != hidden-state proof",
+      "R&D promotion requires external evidence and explicit gate"
+    ]
+  },
+  "epistemic": {
+    "status": "EXPERIMENTAL",
+    "confidence": 0.72
+  }
+}
