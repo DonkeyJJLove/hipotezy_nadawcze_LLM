@@ -1,0 +1,56 @@
+name: Epistemic Lab Guard
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Require epistemic control artifacts
+        run: |
+          test -f README.md
+          test -f PROCESS_GUARD.md
+          test -f cyber-lion.repository.json
+
+      - name: Reject tracked local/generated state
+        shell: bash
+        run: |
+          BAD=$(git ls-files | grep -E '(^|/)(\.venv|venv|\.idea|\.vscode|__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache)(/|$)|\.egg-info(/|$)|(^|/)\.env($|\.)|\.py[co]$|(^|/)(\.DS_Store|Thumbs\.db)$' | grep -v -E '(^|/)\.env\.sample$' || true)
+          if [ -n "$BAD" ]; then
+            echo "Tracked local/generated state violates source-purity invariant:"
+            echo "$BAD"
+            exit 1
+          fi
+
+      - name: Validate manifest and UTF-8 research corpus
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          json.loads(Path("cyber-lion.repository.json").read_text(encoding="utf-8"))
+          markdown = list(Path(".").glob("*.md"))
+          if not markdown:
+              raise SystemExit("No Markdown research artifacts found")
+          for path in markdown:
+              path.read_text(encoding="utf-8")
+          print(f"validated {len(markdown)} Markdown artifacts and repository manifest")
+          PY
