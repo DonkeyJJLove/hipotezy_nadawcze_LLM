@@ -9,9 +9,20 @@
   },
   "cyber_lion": {
     "tile_id": "epistemic-lab.llm-hypotheses",
-    "roles": ["HypothesisLab", "ExperimentDesignProvider", "FalsificationEvidenceProvider"],
-    "layers": ["SEM"],
-    "disposition": ["KEEP", "REFINE", "EXPERIMENTAL", "INTEGRATE"]
+    "roles": [
+      "HypothesisLab",
+      "ExperimentDesignProvider",
+      "FalsificationEvidenceProvider"
+    ],
+    "layers": [
+      "SEM"
+    ],
+    "disposition": [
+      "KEEP",
+      "REFINE",
+      "EXPERIMENTAL",
+      "INTEGRATE"
+    ]
   },
   "capabilities": [
     "hypothesis.formalize",
@@ -23,12 +34,27 @@
   ],
   "authority": {
     "maximum_level": "read",
-    "required_gates": ["rnd.promotion", "cyber-lion.mand"]
+    "required_gates": [
+      "rnd.promotion",
+      "cyber-lion.mand"
+    ]
   },
   "observability": {
-    "logs": ["hypothesis.created", "experiment.proposed", "evidence.attached", "confidence.updated"],
-    "metrics": ["hypothesis.count", "falsification.count", "confidence.delta", "negative.result.count"],
-    "traces": ["thesis→prediction→falsifier→evidence→revision→promotion/supersession"]
+    "logs": [
+      "hypothesis.created",
+      "experiment.proposed",
+      "evidence.attached",
+      "confidence.updated"
+    ],
+    "metrics": [
+      "hypothesis.count",
+      "falsification.count",
+      "confidence.delta",
+      "negative.result.count"
+    ],
+    "traces": [
+      "thesis→prediction→falsifier→evidence→revision→promotion/supersession"
+    ]
   },
   "security": {
     "trust_boundaries": [
@@ -41,5 +67,57 @@
   "epistemic": {
     "status": "EXPERIMENTAL",
     "confidence": 0.72
+  },
+  "architecture_knowledge": {
+    "schema_version": "1.0.0",
+    "global_owner": "DonkeyJJLove/ai_platform",
+    "semantic_exports": [
+      "hypothesis_research",
+      "experiment_design",
+      "falsification_evidence"
+    ],
+    "semantic_imports": [
+      "architecture",
+      "formalization",
+      "currentness"
+    ],
+    "repository_dependencies": [
+      "DonkeyJJLove/ai_platform"
+    ],
+    "architecture_artifacts": [
+      {
+        "path": "AGENTS.md",
+        "class": "HUMAN_ARCHITECTURE_DOCUMENT",
+        "currentness": "LOCAL_OWNER"
+      },
+      {
+        "path": "AI_NATIVE_ROADMAP.md",
+        "class": "ROADMAP",
+        "currentness": "LOCAL_OWNER"
+      },
+      {
+        "path": "PROCESS_GUARD.md",
+        "class": "PROCESS_GUARD",
+        "currentness": "LOCAL_OWNER"
+      },
+      {
+        "path": "README.md",
+        "class": "RESEARCH_ARCHITECTURE",
+        "currentness": "LOCAL_OWNER"
+      }
+    ],
+    "discoverability": {
+      "entrypoint": "AGENTS.md",
+      "global_owner_route": "AGENTS.md -> cyber-lion.repository.json -> DonkeyJJLove/ai_platform:LION/architecture/v1_5/README.md",
+      "max_reads_to_global_owner": 3
+    },
+    "invalidation_triggers": [
+      "SOURCE_CHANGE",
+      "CONTRACT_CHANGE",
+      "CAPABILITY_CHANGE",
+      "CURRENTNESS_CHANGE",
+      "REPOSITORY_ROLE_CHANGE",
+      "DEPENDENCY_CHANGE"
+    ]
   }
 }
