@@ -1,0 +1,15 @@
+{
+  "schema": "lion.repository-standardization/v1",
+  "repository": "DonkeyJJLove/hipotezy_nadawcze_LLM",
+  "baseline": {
+    "head": "46e994b651481c62faa4bc84b9e529efbcb5a7b6",
+    "tree": "8c36003c0ead17b0593292633e598022b32de86f"
+  },
+  "global_standard_owner": "DonkeyJJLove/ai_platform:LION/standards/README.md",
+  "rename_map": [],
+  "additional_repairs": [],
+  "unresolved": [],
+  "disposition": "VALIDATE_ONLY",
+  "delete_effect": "NONE",
+  "authority_effect": "NONE"
+}
