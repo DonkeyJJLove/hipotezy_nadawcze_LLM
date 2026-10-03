@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "lion://hypothesis-spec/v1",
+  "$defs": {
+    "hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hypothesis_id",
+        "claim",
+        "assumptions",
+        "observable_consequences",
+        "falsifiers",
+        "evidence_refs",
+        "status",
+        "authority_effect",
+        "digest"
+      ]
+    },
+    "experiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "experiment_id",
+        "hypothesis_ref",
+        "input_schema_ref",
+        "output_schema_ref",
+        "falsifier_refs",
+        "risk_bound",
+        "authority_effect",
+        "execution_effect",
+        "digest"
+      ]
+    }
+  }
+}
