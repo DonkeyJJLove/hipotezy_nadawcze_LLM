@@ -74,12 +74,15 @@
     "semantic_exports": [
       "hypothesis_research",
       "experiment_design",
-      "falsification_evidence"
+      "falsification_evidence",
+      "hypothesis_candidate",
+      "falsifier_candidate"
     ],
     "semantic_imports": [
       "architecture",
       "formalization",
-      "currentness"
+      "currentness",
+      "semantic_relevance"
     ],
     "repository_dependencies": [
       "DonkeyJJLove/ai_platform"
