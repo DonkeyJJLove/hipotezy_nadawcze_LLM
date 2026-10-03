@@ -112,6 +112,16 @@
         "path": "REPOSITORY_STANDARDIZATION_R1.json",
         "class": "MACHINE_READABLE_ARCHITECTURE",
         "currentness": "LOCAL_OWNER"
+      },
+      {
+        "path": "contracts/hypothesis_spec.py",
+        "class": "CONTRACT",
+        "currentness": "LOCAL_OWNER"
+      },
+      {
+        "path": "contracts/hypothesis_spec.schema.json",
+        "class": "SCHEMA",
+        "currentness": "LOCAL_OWNER"
       }
     ],
     "discoverability": {
