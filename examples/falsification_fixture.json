@@ -1,0 +1,32 @@
+{
+  "hypothesis": {
+    "hypothesis_id": "hypothesis:deterministic-seed",
+    "claim": "For an unchanged simulation model and fixed seed, canonical result identity is reproducible.",
+    "assumptions": [
+      "model source and configuration are unchanged"
+    ],
+    "observable_consequences": [
+      "replayed result digest is equal"
+    ],
+    "falsifiers": [
+      "replayed result digest differs"
+    ],
+    "evidence_refs": [],
+    "status": "TESTABLE",
+    "authority_effect": "NONE",
+    "digest": "b937fcd7696cb8a111f710b2698fbb38493e408c794b914f077939fb88934a8a"
+  },
+  "experiment": {
+    "experiment_id": "experiment:deterministic-seed",
+    "hypothesis_ref": "hypothesis:deterministic-seed",
+    "input_schema_ref": "lion.simulation-request/v1",
+    "output_schema_ref": "lion.simulation-result/v1",
+    "falsifier_refs": [
+      "replayed-result-differs"
+    ],
+    "risk_bound": "synthetic fixture only",
+    "authority_effect": "NONE",
+    "execution_effect": "NONE",
+    "digest": "2819fd6e68e09fb3f57003991ff3609d0f60dfb2b0e135e4884ed5e9262c124a"
+  }
+}
